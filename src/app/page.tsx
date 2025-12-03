@@ -37,10 +37,18 @@ export default function Home() {
       const id = Date.now().toString(36) + Math.random().toString(36).substr(2);
       console.log('Generated ID:', id);
       
-      // Store in localStorage and context
-      setContent(id, data);
-      localStorage.setItem(`content_${id}`, JSON.stringify(data));
-      console.log('Content stored in context and localStorage');
+      // Store on server
+      const storeResponse = await fetch('/api/storage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'store', id, data }),
+      });
+
+      if (!storeResponse.ok) {
+        throw new Error('Failed to store content');
+      }
+
+      console.log('Content stored on server');
 
       // Navigate to content page
       console.log('Navigating to /content/' + id);

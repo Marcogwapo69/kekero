@@ -25,23 +25,30 @@ export default function ContentPage({ params }: { params: Promise<{ id: string }
         const resolvedParams = await params;
         const id = resolvedParams.id;
         console.log('Content page loaded, retrieving ID:', id);
+        
+        // First try to get from context
         let stored = getContent(id);
         console.log('Retrieved from context:', stored);
         
-        // If not in context, try localStorage
+        // If not in context, fetch from server storage
         if (!stored) {
-          const localData = localStorage.getItem(`content_${id}`);
-          if (localData) {
-            try {
-              stored = JSON.parse(localData);
-              console.log('Retrieved from localStorage:', stored);
-              // Also restore to context for this session
-              if (stored) {
-                setContent(id, stored);
-              }
-            } catch (err) {
-              console.error('Failed to parse localStorage data:', err);
+          console.log('Fetching from server storage...');
+          const response = await fetch('/api/storage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'retrieve', id }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            stored = result.data;
+            console.log('Retrieved from server:', stored);
+            // Also restore to context for this session
+            if (stored) {
+              setContent(id, stored);
             }
+          } else {
+            console.error('Failed to retrieve from server');
           }
         }
         
