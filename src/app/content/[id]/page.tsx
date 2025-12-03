@@ -65,9 +65,12 @@ export default function ContentPage({ params }: { params: Promise<{ id: string }
     fetchData();
   }, [params, getContent, setContent]);
 
-  const copyUrl = () => {
-    navigator.clipboard.writeText(data?.url || '');
-    alert('URL copied to clipboard!');
+  const copyUrl = async () => {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+    const pageUrl = `${window.location.origin}/content/${id}`;
+    navigator.clipboard.writeText(pageUrl);
+    alert('Fetched URL copied to clipboard!');
   };
 
   const downloadContent = () => {
