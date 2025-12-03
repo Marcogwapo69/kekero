@@ -155,7 +155,6 @@ export default function ContentPage({ params }: { params: Promise<{ id: string }
                 srcDoc={data.content}
                 className="w-full min-h-screen"
                 title="Content Preview"
-                sandbox="allow-same-origin allow-scripts allow-top-navigation allow-popups allow-forms allow-modals"
               />
             </div>
           )}
