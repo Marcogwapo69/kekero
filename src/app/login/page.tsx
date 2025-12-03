@@ -15,9 +15,20 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // Redirect with password in query, middleware will set cookie
-      router.push(`/?pwd=${encodeURIComponent(password)}`);
+      // Test the password by fetching the main page with pwd param
+      const response = await fetch(`/?pwd=${encodeURIComponent(password)}`);
+      
+      if (response.status === 401) {
+        setError('Invalid password');
+        setLoading(false);
+        return;
+      }
+
+      // If successful, redirect to home
+      router.push('/');
+      router.refresh();
     } catch (err) {
+      console.error('Auth error:', err);
       setError('Authentication failed');
       setLoading(false);
     }

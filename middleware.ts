@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
     // Get the password from cookies or query params
     const cookiePassword = request.cookies.get('auth_password')?.value;
     const queryPassword = request.nextUrl.searchParams.get('pwd');
-    const PASSWORD = process.env.NEXT_PUBLIC_PASSWORD || 'secret123';
+    const PASSWORD = process.env.NEXT_PUBLIC_PASSWORD;
 
     // Check if authenticated
     const isAuthenticated = cookiePassword === PASSWORD || queryPassword === PASSWORD;
@@ -40,6 +40,7 @@ export function middleware(request: NextRequest) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60, // 7 days
+        path: '/',
       });
       return response;
     }
